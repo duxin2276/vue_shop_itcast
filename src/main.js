@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 // 引入全局样式
-import '../src/assets/css/global.css'
+import './assets/css/global.css'
 // 导入element ui
 import Element from 'element-ui'
 // 导入element ui样式
