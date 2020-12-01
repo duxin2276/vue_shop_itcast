@@ -5,6 +5,10 @@ import VueRouter from 'vue-router'
 import Login from '../components/Login'
 // 导入首页页面组件
 import Home from '../components/Home'
+// 导入welcome组件
+import Welcome from '../components/Welcome'
+// 导入用户列表组件
+import User from '../components/user/Users'
 
 // 注册路由
 Vue.use(VueRouter)
@@ -13,11 +17,19 @@ Vue.use(VueRouter)
 const routes = [
   {path: '/', redirect: '/login'},
   {path: '/login', component: Login},
-  {path: '/home', component: Home}
+  {path: '/home',
+   component: Home,
+   redirect: '/welcome',
+   children: [
+  {path: '/welcome', component: Welcome},
+  {path: '/users', component: User},
+   ]
+  }
 ]
 
 // 创建路由实例
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 // 挂载路由导航守卫

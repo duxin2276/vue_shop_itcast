@@ -13,41 +13,52 @@
     <!-- 主体区域 -->
     <el-container>
       <!-- 左侧菜单栏区域 -->
-      <el-aside :width="isCollapse ? '64px':'200px'">
+      <el-aside :width="isCollapse ? '64px' : '200px'">
         <div class="togglebutton" @click="changeCollapse">|||</div>
         <el-menu
-      default-active="2"
-      class="el-menu-vertical-demo"
-      background-color="#333744"
-      text-color="#fff"
-      active-text-color="#ffd04b"
-      unique-opened
-      :collapse = "isCollapse"
-      :collapse-transition = "false">
-      <!-- 一级菜单 -->
-      <el-submenu :index="item.id+''" v-for="item in menuLsit"
-      :key="item.id">
-        <template slot="title">
-          <!-- 字体图标 -->
-          <i :class="iconsObj[item.id]"></i>
-          <!-- 菜单项名称 -->
-          <span>{{item.authName}}</span>
-        </template>
-        <!-- 二级菜单 -->
-          <el-menu-item :index="subItem.id+''" v-for="subItem in item.children"
-          :key="subItem.id">
+          class="el-menu-vertical-demo"
+          background-color="#333744"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          unique-opened
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          router
+          :default-active="activepath"
+        >
+          <!-- 一级菜单 -->
+          <el-submenu
+            :index="item.id + ''"
+            v-for="item in menuLsit"
+            :key="item.id"
+          >
             <template slot="title">
               <!-- 字体图标 -->
-          <i class="el-icon-menu"></i>
-          <!-- 菜单项名称 -->
-          <span>{{subItem.authName}}</span>
+              <i :class="iconsObj[item.id]"></i>
+              <!-- 菜单项名称 -->
+              <span>{{ item.authName }}</span>
             </template>
-          </el-menu-item>
-      </el-submenu>
-    </el-menu>
+            <!-- 二级菜单 -->
+            <el-menu-item
+              :index="'/' + subItem.path"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+              @click="activepathClick('/' + subItem.path)"
+            >
+              <template slot="title">
+                <!-- 字体图标 -->
+                <i class="el-icon-menu"></i>
+                <!-- 菜单项名称 -->
+                <span>{{ subItem.authName }}</span>
+              </template>
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
       </el-aside>
       <!-- 右侧内容主体区域 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -67,11 +78,14 @@ export default {
         '145':'iconfont icon-baobiao'
       },
       // 改变侧边栏状态的值
-      isCollapse: false
+      isCollapse: false,
+      // 激活导航高亮
+      activepath: ''
     }
   },
   mounted () {
     this.getMenuList()
+    this.activepath = window.sessionStorage.getItem('activepath')
   },
   methods: {
       loginOut() {
@@ -90,6 +104,13 @@ export default {
       // 改变侧边栏的状态
       changeCollapse() {
         this.isCollapse = !this.isCollapse
+      },
+      // 让点击的导航栏高亮
+      activepathClick(active) {
+        // console.log(active);
+        //点击二级菜单的时候保存被点击的二级菜单信息
+        window.sessionStorage.setItem('activepath',active)
+        this.activepath = active
       }
   }
 }
@@ -117,7 +138,6 @@ export default {
   .el-menu {
     border-right: 0;
   }
-  
 }
 .el-main {
   background-color: #eaedf1;
